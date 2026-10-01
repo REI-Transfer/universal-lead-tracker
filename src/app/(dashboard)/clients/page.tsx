@@ -7,12 +7,14 @@ import { AnimatedCounter } from '@/components/ui/animated-counter'
 
 interface ClientRow {
   client_slug: string
-  name: string
+  /** null for a funnel that is sending leads but has no row in `clients` yet */
+  name: string | null
   is_active: boolean
   domain: string | null
   crm_type: string | null
   survey_version: string | null
   lead_count: number
+  unregistered?: boolean
 }
 
 export default function ClientsPage() {
@@ -91,7 +93,17 @@ export default function ClientsPage() {
                       key={c.client_slug}
                       className="border-b border-white/5 row-glow transition-colors"
                     >
-                      <td className="px-4 py-3 font-medium">{c.name}</td>
+                      <td className="px-4 py-3 font-medium">
+                        {c.name ?? c.client_slug}
+                        {c.unregistered && (
+                          <span
+                            className="ml-2 rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide bg-amber-500/15 text-amber-400 align-middle"
+                            title="Receiving leads but not registered in the clients table"
+                          >
+                            unregistered
+                          </span>
+                        )}
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <span className="tabular-nums shrink-0 w-8">{c.lead_count}</span>
